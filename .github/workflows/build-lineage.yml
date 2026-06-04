@@ -70,11 +70,11 @@ jobs:
         cd ~/lineageos_x86
         source build/envsetup.sh
         export WITH_GAPPS=true
-        lunch lineage_x86-userdebug
+        lunch lineage_x86_64-userdebug
         mka iso_img -j$(nproc --all)
 
     - name: Mengunggah Hasil Build (Upload Artifact)
       uses: actions/upload-artifact@v4
       with:
-        name: LineageOS-23.2-x86-ISO
-        path: ~/lineageos_x86/out/target/product/x86/*.iso
+        name: LineageOS-23.2-x86_64-ISO
+        path: ~/lineageos_x86/out/target/product/x86_64/*.iso
