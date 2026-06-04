@@ -52,10 +52,24 @@ jobs:
         cd ~/lineageos_x86
         repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
+    - name: Integrasi GApps & KernelSU
+      run: |
+        cd ~/lineageos_x86
+        echo ">>> Kloning MindTheGapps..."
+        git clone https://gitlab.com/MindTheGapps/vendor_gapps.git vendor/gapps
+        
+        echo ">>> Memasang KernelSU..."
+        KERNEL_DIR=$(find kernel device -maxdepth 4 -type f -name "Makefile" -exec grep -l "VERSION =" {} + | xargs dirname | head -n 1)
+        if [ ! -z "$KERNEL_DIR" ]; then
+            cd $KERNEL_DIR
+            curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+        fi
+
     - name: Kompilasi (Build ISO)
       run: |
         cd ~/lineageos_x86
         source build/envsetup.sh
+        export WITH_GAPPS=true
         lunch lineage_x86-userdebug
         mka iso_img -j$(nproc --all)
 
